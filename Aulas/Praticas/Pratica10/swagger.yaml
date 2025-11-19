@@ -1,0 +1,62 @@
+paths:
+  /usuarios:
+    delete:
+      tags: [usuarios]
+      security: [{ JWTAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          schema: { type: string }
+          required: true
+      responses:
+        '204':
+          description: Sem conteúdo
+
+  /usuarios/login:
+    post:
+      tags: [usuarios]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usuario: { type: string }
+                senha: { type: string }
+              required: [usuario, senha]
+      responses:
+        '200':
+          content:
+             application/json:
+               schema: { type: object, properties: { token: { type: string } } }
+        '401':
+          content:
+             application/json:
+               schema: { $ref: '#/components/schemas/Mensagem' }
+
+  /usuarios/renovar:
+    post:
+      tags: [usuarios]
+      security: [{ JWTAuth: [] }]
+      responses:
+        '200':
+          content:
+             application/json:
+               schema: { $ref: '#/components/schemas/Mensagem' }
+        '401':
+          content:
+             application/json:
+               schema: { $ref: '#/components/schemas/Mensagem' }
+
+components:
+  schemas:
+    Usuario:
+    Mensagem:
+      type: object
+      properties:
+        msg: { type: string }
+  securitySchemes:
+    JWTAuth:
+      type: apiKey
+      in: header
+      name: authorization
